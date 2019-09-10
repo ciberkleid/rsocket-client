@@ -1,6 +1,5 @@
 package com.example.rsocketclient;
 
-import io.rsocket.transport.netty.UriUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -34,11 +33,25 @@ public class RsocketClientApplication {
 	ConfigProperties configProperties;
 
 	@Bean
-	public RSocketRequester rSocketRequester(RSocketRequester.Builder b) throws URISyntaxException {
-		log.info("RSocketRequester: connecting to {} on port {} via {}", configProperties.getHost(), configProperties.getPort(), configProperties.getTransport());
-		return b.connectTcp(configProperties.getHost(), configProperties.getPort()).block();
+	public RSocketRequester rSocketRequester(RSocketRequester.Builder b) {
+		if (configProperties.getTransport().equalsIgnoreCase("websocket")) {
+			return b.connectWebSocket(getURI()).block();
+		} else {
+			log.info("RSocketRequester: connecting to {} on port {} via {}", configProperties.getHost(), configProperties.getPort(), configProperties.getTransport());
+			return b.connectTcp(configProperties.getHost(), configProperties.getPort()).block();
+		}
 	}
 
+	private URI getURI() {
+		try {
+			String uriString = "ws://" + configProperties.getHost() + ":" + configProperties.getPort() + configProperties.getPathMapping();
+			log.info("RSocketRequester: creating URI for {} connection to {}", configProperties.getTransport(), uriString);
+			return new URI(uriString);
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }
 
 @Slf4j
@@ -47,6 +60,17 @@ public class RsocketClientApplication {
 class GreetingController {
 
 	private final RSocketRequester requester;
+
+	@GetMapping("/")
+	Mono<String> home() {
+
+		String usage = "Usage Instructions:  \n" +
+				"Fire and forget:     /hello \n" +
+				"Request/response:    /name/{name} \n" +
+				"Stream:              /stream \n" +
+				"Channel:             /channel \n";
+		return Mono.just(usage);
+	}
 
 	@GetMapping("hello")
 	Mono<Void> hello() {

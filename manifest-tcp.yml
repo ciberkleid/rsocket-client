@@ -1,0 +1,10 @@
+---
+applications:
+  - name: rsocket-client-tcp
+    path: target/rsocket-client-0.0.1-SNAPSHOT.jar
+    routes:
+      - route: rsocket-client-tcp.apps.clearlake.cf-app.com
+    env:
+      RSOCKET_SAMPLE_SERVER_TRANSPORT: tcp
+      RSOCKET_SAMPLE_SERVER_HOST: tcp.clearlake.cf-app.com
+      RSOCKET_SAMPLE_SERVER_PORT: 1024

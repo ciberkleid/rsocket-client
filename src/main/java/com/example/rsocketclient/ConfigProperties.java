@@ -12,5 +12,6 @@ public class ConfigProperties {
     private String transport = "tcp";
     private String host = "localhost";
     private Integer port = 7000;
+    private String pathMapping = "/";
 
 }

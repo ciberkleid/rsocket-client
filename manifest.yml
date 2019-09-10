@@ -1,6 +1,0 @@
----
-applications:
-  - name: rsocket-client
-    path: target/rsocket-client-0.0.1-SNAPSHOT.jar
-    routes:
-      - route: greet.apps.pcfone.io

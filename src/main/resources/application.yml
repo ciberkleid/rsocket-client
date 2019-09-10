@@ -1,0 +1,49 @@
+---
+spring:
+  profiles: tcplocal2local
+server:
+  port: 8080
+rsocket:
+  sample:
+    server:
+      transport: tcp
+      host: localhost
+      port: 7000
+
+---
+spring:
+  profiles: wslocal2local
+server:
+  port: 8081
+rsocket:
+  sample:
+    server:
+      transport: websocket
+      host: localhost
+      port: 8080
+      path-mapping: /
+
+---
+spring:
+  profiles: tcplocal2cloud
+server:
+  port: 8080
+rsocket:
+  sample:
+    server:
+      transport: tcp
+      host: tcp.clearlake.cf-app.com
+      port: 1024
+
+---
+spring:
+  profiles: wslocal2cloud
+server:
+  port: 8080
+rsocket:
+  sample:
+    server:
+      transport: websocket
+      host: rsocket-server.apps.clearlake.cf-app.com
+      port: 80
+      path-mapping: /
